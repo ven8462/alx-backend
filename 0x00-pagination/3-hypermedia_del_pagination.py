@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""Deletion-resilient hypermedia pagination"""
+"""
+Deletion-resilient hypermedia pagination
+"""
 
 import csv
 from typing import List, Dict
@@ -37,19 +39,24 @@ class Server:
         return self.__indexed_dataset
 
     def get_hyper_index(self, index: int = None, page_size: int = 10) -> Dict:
-        assert index is None or index >= 0, "Invalid index"
-
-        dataset = self.indexed_dataset()
+        """
+        Return a dictionary with the following key-value pairs:
+        """
+        assert type(index) == int
+        assert type(page_size) == int
+        csv = self.indexed_dataset()
+        csv_size = len(csv)
+        assert 0 <= index < csv_size
         data = []
-        next_index = index + page_size
-
-        for i in range(index, next_index):
-            if i in dataset:
-                data.append(dataset[i])
-
+        _next = index
+        for _ in range(page_size):
+            while not csv.get(_next):
+                _next += 1
+            data.append(csv.get(_next))
+            _next += 1
         return {
-            'index': index,
-            'next_index': next_index,
-            'page_size': page_size,
-            'data': data
+            "index": index,
+            "data": data,
+            "page_size": page_size,
+            "next_index": _next
         }
