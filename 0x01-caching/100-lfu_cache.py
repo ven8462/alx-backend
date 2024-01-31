@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-caching System
+caching System module
 """
 
 from base_caching import BaseCaching
