@@ -1,27 +1,44 @@
 #!/usr/bin/env python3
-""" FIFO caching """
+"""
+FIFO Caching
+"""
 
-from base_caching import BaseCaching
+BaseCaching = __import__('base_caching').BaseCaching
 
 
 class FIFOCache(BaseCaching):
-    """ FIFO cache class """
+    """
+    FIFO Caching system that inherits from BaseCaching
+    """
+
     def __init__(self):
+        """
+        Init method
+        """
         super().__init__()
+        self.key_indexes = []
 
     def put(self, key, item):
-        if key is None or item is None:
-            return
+        """
+        Must assign to the dictionary self.cache_data
+        """
+        if key and item:
+            if key in self.cache_data:
+                self.cache_data[key] = item
+                return key
 
-        if len(self.cache_data) >= BaseCaching.MAX_ITEMS:
-            first_key = next(iter(self.cache_data))
-            del self.cache_data[first_key]
-            print("DISCARD:", first_key)
+            if len(self.cache_data) >= BaseCaching.MAX_ITEMS:
+                item_discarded = self.key_indexes.pop(0)
+                del self.cache_data[item_discarded]
+                print("DISCARD:", item_discarded)
 
-        self.cache_data[key] = item
+            self.cache_data[key] = item
+            self.key_indexes.append(key)
 
     def get(self, key):
-        if key is None or key not in self.cache_data:
-            return None
-
-        return self.cache_data[key]
+        """
+        Must return the value in self.cache_data linked to key
+        """
+        if key in self.cache_data:
+            return self.cache_data[key]
+        return None
