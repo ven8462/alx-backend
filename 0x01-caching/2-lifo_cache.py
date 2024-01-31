@@ -14,10 +14,10 @@ class LIFOCache(BaseCaching):
         if key is None or item is None:
             return
 
-        if len(self.cache_data) >= BaseCaching.MAX_ITEMS:
+        if len(self.cache_data) > BaseCaching.MAX_ITEMS:
             last_item = self.get_last_item()
-            del self.cache_data[last_item]
-            print("DISCARD:", last_item)
+            del self.cache_data[last_item[0]]
+            print("DISCARD:", last_item[0])
 
         self.cache_data[key] = item
 
@@ -30,4 +30,4 @@ class LIFOCache(BaseCaching):
 
     def get_last_item(self):
         """ Get the last item inserted into cache"""
-        return next(reversed(self.cache_data))
+        return list(self.cache_data.items())[-1]
